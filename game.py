@@ -131,6 +131,54 @@ class ChessBoard:
             if not (all(p == 0 for p in auxboard)):
                 raise Exception('The path is obscured')
 
+        elif piece_type == 'B':
+            if not (abs((i - m) / (j - n)) == 1):
+                raise Exception('The bishop cannot move like this')
+            if check1 and check2:
+                for ct in range(m - i - 1):
+                    auxboard.append(board[i + 1 + ct][j + 1 + ct])
+            elif check1 and (not check2):
+                for ct in range(m - i  - 1):
+                    auxboard.append(board[i + 1 + ct][j + 1 - ct])
+            elif (not check1) and check2:
+                for ct in range(i - m - 1):
+                    auxboard.append(board[i + 1 - ct][j +1 + ct])
+            elif (not check1) and (not check2):
+                for ct in range(i - m - 1):
+                    auxboard.append(board[i + 1 - ct][j + 1 - ct])
+                    print(board[i + 1 - ct][j + 1 - ct])
+            if not (all(p == 0 for p in auxboard)):
+                raise Exception('The path is obscured')
+        elif piece_type == 'N': # The path may be obscured this time
+            if not (((abs(i - m) == 2) and (abs(j - n) == 1)) or  ((abs(i - m) == 1) and (abs(j - n) == 2))):
+                raise Exception('The knight cannot move like this')
+
+        elif piece_type == 'P':
+            if piece.color == 'w':
+                if piece.cn == 0:
+                    if not(((n - j) == 2) or ((n - j) == 1) and ((i - m) == 0)):
+                        raise Exception('The pawn cannot move like this')
+                elif piece.cn != 0:
+                    if not((n - j) == 1):
+                        raise Exception('The pawn cannot move like this')
+            else:
+                if piece.cn == 0:
+                    if not(((n - j) == -2) or ((n - j) == -1) and ((i - m) == 0)):
+                        raise Exception('The pawn cannot move like this')
+                elif piece.cn != 0:
+                    if not((n - j) == -1):
+                        raise Exception('The pawn cannot move like this')
+
+        # Implement one cannot move to a square containing same color piece
+        if board[m][n] != 0: # There is a piece in the final position
+            if board[i][j].color == board[m][n].color:# Two pieces are of the same color
+                raise Exception("You cannot go to your own pieces location")
+            elif board[m][n].symbol == 'K':# The opponent king is in the location
+                raise Exception("You cannot eat the KING")
+        if ((piece_type == 'P') or (piece_type == 'K')):
+            piece.cn += 1
+        return 1
+
     def move(self, position):
         # These two strings are for board coordinates
         letter_log = 'abcdefgh'
