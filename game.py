@@ -42,6 +42,49 @@ class ChessBoard:
             exec("WPawn" + str(i+1)  + "= Pawn(i, 1, 'w', board)")
         return board
 
+    def sketch_board(self, board):
+        func_sym_col = np.vectorize(self.retrieve_piece)
+        symbolic_board = func_sym_col(board)
+        return symbolic_board
+
+    def retrieve_piece(self, piece):
+        if isinstance(piece, ChessPiece):
+            return str(piece.symbol+piece.color)
+        else:
+            return '0 '
+
+    def rules(self, piece, i, j, m, n):
+        board = self.board
+        #symboard = self.sketch_board(board)
+        if ((self.__class__.cn % 2) == 0):
+            if (piece.color == 'b'):
+                raise Exception('It is Whites turn to play')
+        else:
+            if (piece.color == 'w'):
+                raise Exception('It is Blacks turn to play')
+        piece_type = piece.symbol # Rules depend on the piece
+        # Implement check
+        check_new_pos = 0 # We should modify this write a loop over other pieces
+        opponent_king = 0
+        auxboard = []
+        if ((m - i) >= 0):
+            check1 = 1
+        else:
+            check1 = 0
+        if ((n - j) >= 0):
+            check2 = 1
+        else:
+            check2 = 0
+
+        if piece_type == 'K':
+            if (abs(i - m) > 1):
+                raise Exception('This is not a valid move for the King')
+            elif (abs(j - n) > 1) :
+                raise Exception('This is not a valid move for the King')
+            elif check_new_pos:
+                raise Exception('The King cannot move to a threatened square!!!')
+            elif opponent_king:
+                raise Exception('You cannot go too close to the opponent king')
 
     def move(self, position):
         # These two strings are for board coordinates
