@@ -41,3 +41,65 @@ class ChessBoard:
         for i in range(8):
             exec("WPawn" + str(i+1)  + "= Pawn(i, 1, 'w', board)")
         return board
+
+class ChessPiece: # This is the base class, all the other specific pieces inherit this class.
+
+    def __init__(self, x, y, color):
+        if not ((int == type(x)) and (int == type(y))):
+            raise TypeError(' x and y should be integers!!')
+        elif not ((x in range(8)) and (y in range(8))):
+            raise ValueError('x and y positions should be between 0 and 7 inclusive')
+        elif not ((str == type(color)) and (color in 'wb')):
+            raise ValueError('Color should be "w" or "b"')
+        self.pos_x = x
+        self.pos_y = y
+        self.color = color
+
+    def movepiece(self, i, j, m, n, chessboard):
+        self.pos_x = i
+        self.pos_y = j
+        chessboard[i][j] = 0
+        chessboard[m][n] = self
+
+class King(ChessPiece):
+    def __init__(self, x, y, color, chessboard):
+
+        ChessPiece.__init__(self, x, y, color)
+        self.symbol = 'K'
+        self.cn = 0
+        chessboard[self.pos_x][self.pos_y] = self
+
+class Queen(ChessPiece):
+
+    def __init__(self, x, y, color, chessboard):
+
+        ChessPiece.__init__(self, x, y, color)
+        self.symbol = 'Q'
+        chessboard[self.pos_x][self.pos_y] = self
+
+class Rook(ChessPiece):
+
+    def __init__(self, x, y, color, chessboard):
+
+        ChessPiece.__init__(self, x, y, color)
+        self.symbol = 'R'
+        chessboard[self.pos_x][self.pos_y] = self
+
+class Bishop(ChessPiece):
+    def __init__(self, x, y, color, chessboard):
+
+        ChessPiece.__init__(self, x, y, color)
+        self.symbol = 'B'
+        chessboard[self.pos_x][self.pos_y] = self
+
+class Knight(ChessPiece):
+    def __init__(self, x, y, color, chessboard):
+
+        ChessPiece.__init__(self, x, y, color)
+        chessboard[self.pos_x][self.pos_y] = self ; self.symbol = 'N'
+
+class Pawn(ChessPiece):
+
+    def __init__(self, x, y, color, chessboard):
+        ChessPiece.__init__(self, x, y, color)
+        chessboard[self.pos_x][self.pos_y] = self;self.cn = 0;self.symbol = 'P'
