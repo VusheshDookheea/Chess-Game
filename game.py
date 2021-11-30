@@ -42,6 +42,38 @@ class ChessBoard:
             exec("WPawn" + str(i+1)  + "= Pawn(i, 1, 'w', board)")
         return board
 
+
+    def move(self, position):
+        # These two strings are for board coordinates
+        letter_log = 'abcdefgh'
+        num_log = '12345678'
+        board = self.board
+        if not (len(position) == 4):
+            raise ValueError('The position string should consist of 4 characters');
+        # Get the final and initial positions
+        init_pos = position[:2]
+        fin_pos = position[-2:]
+        # First perform the checks
+        if not (str == type(init_pos) and (str == type(fin_pos))):     # Check if the arguments are strings
+            raise TypeError('The supplied positions should be strings!')
+        elif not ((init_pos[0] in letter_log) and (init_pos[1] in num_log)): # Check if they fulfill the condition to be on the board
+            raise ValueError('The initial position values should be between a1 and h8')
+        elif not ((fin_pos[0] in letter_log) and (fin_pos[1] in num_log)): # Check if they fulfill the condition to be on the board
+            raise ValueError('The final position values should be between a1 and h8')
+        elif init_pos == fin_pos:
+            raise ValueError('Final position should be different from the initial position')
+        # Now determine if there is a piece on the initial square
+        i = letter_log.index(init_pos[0]) ; j = num_log.index(init_pos[1]) # Numerical initial position
+        m = letter_log.index(fin_pos[0]); n = num_log.index(fin_pos[1]) # Numerical final position
+        if not (isinstance(board[i][j], ChessPiece)):
+            raise Exception('There is no chess piece here')
+        piece = board[i][j]
+        if self.rules(piece, i, j, m, n) != 1:
+            raise('This move is not allowed')
+        # Move the piece on the chessboard
+        piece.movepiece(i, j, m, n, board)
+        self.__class__.cn += 1 # Increment the cner after each allowed move
+
 class ChessPiece: # This is the base class, all the other specific pieces inherit this class.
 
     def __init__(self, x, y, color):
