@@ -86,6 +86,51 @@ class ChessBoard:
             elif opponent_king:
                 raise Exception('You cannot go too close to the opponent king')
 
+        elif piece_type == 'Q':
+            if not ((abs((i - m) / (j - n)) == 1) or ((i - m) == 0) or ((j - n) == 0)):
+                raise Exception('The queen cannot move like this')
+            if (i - m) == 0:
+                if check2:
+                    auxboard = board[i][j+1:n]
+                else:
+                    auxboard = board[i][n+1:j]
+            elif (j - n) == 0:
+                if check1:
+                    auxboard = board[i+1:m][j]
+                else:
+                    auxboard = board[m+1:i][j]
+            else:
+                if check1 and check2:
+                    for ct in range(m - i - 1):
+                        auxboard.append(board[i + 1 + ct][j + 1 + ct])
+                elif check1 and (not check2):
+                    for ct in range(m - i  - 1):
+                        auxboard.append(board[i + 1 + ct][j + 1 - ct])
+                elif (not check1) and check2:
+                    for ct in range(i - m - 1):
+                        auxboard.append(board[i + 1 - ct][j +1 + ct])
+                elif (not check1) and (not check2):
+                    for ct in range(i - m - 1):
+                        auxboard.append(board[i + 1 - ct][j + 1 - ct])
+            if not (all(p == 0 for p in auxboard)):
+                raise Exception('The path is obscured')
+
+        elif piece_type == 'R':
+            if not (((i - m) == 0) or ((j - n) == 0)):
+                raise Exception('The rook cannot move like this')
+            if (i - m) == 0:
+                if check2:
+                    auxboard = board[i][j+1:n]
+                else:
+                    auxboard = board[i][n+1:j]
+            elif (j - n) == 0:
+                if check1:
+                    auxboard = board[i+1:m][j]
+                else:
+                    auxboard = board[m+1:i][j]
+            if not (all(p == 0 for p in auxboard)):
+                raise Exception('The path is obscured')
+
     def move(self, position):
         # These two strings are for board coordinates
         letter_log = 'abcdefgh'
